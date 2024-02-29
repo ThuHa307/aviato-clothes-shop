@@ -12,9 +12,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import model.Product;
 
 /**
@@ -24,10 +26,12 @@ import model.Product;
 @WebServlet(name = "GetProductServlet", urlPatterns = {"/product"})
 public class GetProductServlet extends HttpServlet {
 
+    private final int PAGE_SIZE = 12;
     private ProductDAO prDao = new ProductDAO();
     private String color = "";
     private String size = "";
-    private ArrayList<Product> products = prDao.readProducts();
+    private String price = "";
+    private List<Product> products = prDao.readProducts();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -67,8 +71,24 @@ public class GetProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("data", products);
-        request.getRequestDispatcher("collection.jsp").forward(request, response);
+
+        try {
+            String page = request.getParameter("page");
+            int pageCount = (int) Math.ceil((double) products.size() / PAGE_SIZE);
+            int currentPage = 1;
+            if (page != null) {
+                currentPage = Integer.parseInt(page);
+            }
+            int startIndex = (currentPage - 1) * PAGE_SIZE;
+            int endIndex = Math.min(startIndex + PAGE_SIZE, products.size());
+            List<Product> pageStudents = products.subList(startIndex, endIndex);
+            request.setAttribute("data", pageStudents);
+            request.setAttribute("page", currentPage);
+            request.setAttribute("pageCount", pageCount);
+            request.getRequestDispatcher("collection.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -85,18 +105,21 @@ public class GetProductServlet extends HttpServlet {
         String option = request.getParameter("price");
         color = request.getParameter("filter2") != null ? request.getParameter("filter2") : color;
         size = request.getParameter("filter4") != null ? request.getParameter("filter4") : size;
-        if (!color.equals("") || !size.equals(""))
-            products = prDao.filter(color, size);
-        if (products != null) {
-            sort(products, option);
-            request.setAttribute("data", products);
-            request.setAttribute("selectedValue", option);
-            request.getRequestDispatcher("collection.jsp").forward(request, response);
+        price = request.getParameter("filter-price") != null ? request.getParameter("filter-price") : price;
+        if (!"".equals(color) || !"".equals(size) || !"".equals(price)) {
+            products = prDao.filter(color, size, price);
         }
-
+        if (products != null && option != null) {
+            sort(products, option);
+        }
+        request.setAttribute("color", color);
+        request.setAttribute("size", size);
+        request.setAttribute("price", price);
+        request.setAttribute("selectedValue", option);
+        doGet(request, response);
     }
 
-    private void sort(ArrayList<Product> products, String option) {
+    private void sort(List<Product> products, String option) {
         switch (option) {
             case "price-asc" ->
                 Collections.sort(products, Comparator.comparingInt(Product::getPrice));

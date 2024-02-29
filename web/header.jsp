@@ -1,3 +1,7 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="model.Product" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -128,11 +132,11 @@
                 display: none;
                 font-size: 16px;
             }
-            
+
             .navigation .container {
                 position: relative;
             }
-            
+
             .dropdown {
                 padding: 20px 15px;
             }
@@ -141,7 +145,7 @@
                 right: auto;
                 border: none;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-                padding: 15px;          
+                padding: 15px;
                 width: max-content;
             }
             .dropdown-menu li > a {
@@ -185,145 +189,182 @@
         </style>
     </head>
     <body>
-        <section class="top-header">
-            <div class="container ">
-                <div class="row">
-                    <div class="col-md-4 col-xs-12 col-sm-4">
-                        <!-- Search -->
-                        <div class="search_box">
-                            <div class="search">
-                                <div class= "select_area">
-                                    <i class="fas fa-tshirt"></i>
-                                    <div class="text">Product</div>
-                                </div>
+        <div class="header-container">
+            <section class="top-header">
+                <div class="container ">
+                    <div class="row">
+                        <div class="col-md-4 col-xs-12 col-sm-4">
+                            <!-- Search -->
+                            <div class="search_box">
+                                <div class="search">
+                                    <div class= "select_area">
+                                        <i class="fas fa-tshirt"></i>
+                                        <div class="text">Product</div>
+                                    </div>
 
-                                <div class="line"></div>
+                                    <div class="line"></div>
 
-                                <div class = "text_and-icon">
-                                    <input type="text" class="search_text" id="search_text" placeholder="Search by keyword...">
-                                    <i class="fas fa-search search_icon"></i>
-                                </div>
-                            </div> 
+                                    <div class = "text_and-icon">
+                                        <input type="text" class="search_text" id="search_text" placeholder="Search by keyword...">
+                                        <i class="fas fa-search search_icon"></i>
+                                    </div>
+                                </div> 
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4 col-xs-12 col-sm-4">
-                        <div class="logo text-center">
-                            <a href="index.html">
-                                <!-- replace logo here -->
-                                <svg width="135px" height="29px" viewBox="0 0 155 29" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" font-size="40" font-family="AustinBold, Austin" font-weight="bold">
-                                <g id="Group" transform="translate(-108.000000, -297.000000)" fill="#000000">
-                                <text id="AVIATO">
-                                <tspan x="108.94" y="325">AVIATO</tspan>
-                                </text>
-                                </g>
-                                </g>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-xs-12 col-sm-4 btn-auth">
-                        <div class="login">
-                            <a href="#">Log In</a>
-                        </div>
-                        <div class="signup">
-                            <a href="#">Sign Up</a>
-                        </div>
-                    </div>
-                </div>
-        </section>
-
-        <section class="menu">
-            <div class="container navigation">
-                <div class="nav-option">
-                    <a href="#">Home</a>
-                </div>
-                <div class="dropdown-center nav-option">
-                    <a href="#!" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Shop <span class="tf-ion-ios-arrow-down"></span></a>
-                    <div class="dropdown-menu">
-                        <div class="row">
-
-                            <!-- Basic -->
-                            <div class="col-lg-6 col-md-6 mb-sm-3">
-                                <ul>
-                                    <li class="dropdown-header">Pages</li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="shop.html">Shop</a></li>
-                                    <li><a href="checkout.html">Checkout</a></li>
-                                    <li><a href="cart.html">Cart</a></li>
-                                    <li><a href="pricing.html">Pricing</a></li>
-                                    <li><a href="confirmation.html">Confirmation</a></li>
-
-                                </ul>
-                            </div>
-
-                            <!-- Layout -->
-                            <div class="col-lg-6 col-md-6 mb-sm-3">
-                                <ul>
-                                    <li class="dropdown-header">Layout</li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="product-single.html">Product Details</a></li>
-                                    <li><a href="shop-sidebar.html">Shop With Sidebar</a></li>
-
-                                </ul>
-                            </div>
-
-                        </div><!-- / .row -->
-                    </div><!-- / .dropdown-menu -->
-                </div>
-                <div class="dropdown-center nav-option">
-                    <a href="#!" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Pages <span class="tf-ion-ios-arrow-down"></span></a>
-                    <div class="dropdown-menu">
-                        <div class="row">
-
-                            <!-- Introduction -->
-                            <div class="col-sm-3 col-xs-12">
-                                <ul>
-                                    <li class="dropdown-header">Introduction</li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="404.html">404 Page</a></li>
-                                    <li><a href="coming-soon.html">Coming Soon</a></li>
-                                    <li><a href="faq.html">FAQ</a></li>
-                                </ul>
-                            </div>
-
-                            <!-- Contact -->
-                            <div class="col-sm-3 col-xs-12">
-                                <ul>
-                                    <li class="dropdown-header">Dashboard</li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="dashboard.html">User Interface</a></li>
-                                    <li><a href="order.html">Orders</a></li>
-                                    <li><a href="address.html">Address</a></li>
-                                    <li><a href="profile-details.html">Profile Details</a></li>
-                                </ul>
-                            </div>
-
-                            <!-- Utility -->
-                            <div class="col-sm-3 col-xs-12">
-                                <ul>
-                                    <li class="dropdown-header">Utility</li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="login.html">Login Page</a></li>
-                                    <li><a href="signin.html">Signin Page</a></li>
-                                    <li><a href="forget-password.html">Forget Password</a></li>
-                                </ul>
-                            </div>
-
-                            <!-- Mega Menu -->
-                            <div class="col-sm-3 col-xs-12">
-                                <a href="shop.html">
-                                    <img class="img-responsive" src="images/shop/header-img.jpg" alt="menu image">
+                        <div class="col-md-4 col-xs-12 col-sm-4">
+                            <div class="logo text-center">
+                                <a href="index.html">
+                                    <!-- replace logo here -->
+                                    <svg width="135px" height="29px" viewBox="0 0 155 29" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" font-size="40" font-family="AustinBold, Austin" font-weight="bold">
+                                    <g id="Group" transform="translate(-108.000000, -297.000000)" fill="#000000">
+                                    <text id="AVIATO">
+                                    <tspan x="108.94" y="325">AVIATO</tspan>
+                                    </text>
+                                    </g>
+                                    </g>
+                                    </svg>
                                 </a>
                             </div>
-                        </div><!-- / .row -->
+                        </div>
+                        <div class="col-md-4 col-xs-12 col-sm-4 btn-auth">
+                            <div class="login">
+                                <a href="#">Log In</a>
+                            </div>
+                            <div class="signup">
+                                <a href="#">Sign Up</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+            </section>
 
-        </section>
+            <section class="menu">
+                <div class="container navigation">
+                    <div class="nav-option">
+                        <a href="#">Trang chủ</a>
+                    </div>
+                    <c:if test="${not empty categories}">
+                        <c:forEach var="category" items="${categories}">
+                            <div class="dropdown-center nav-option">
+                                <a href="#!" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">${category.name}<span class="tf-ion-ios-arrow-down"></span></a>
+                                <div class="dropdown-menu">
+                                    <div class="row">
+                                        <!-- Basic -->
+                                        <div class="col-lg-6 col-md-6 mb-sm-3">
+                                            <ul>
+                                                <li class="dropdown-header">Pages</li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="shop.html">Shop</a></li>
+                                                <li><a href="checkout.html">Checkout</a></li>
+                                                <li><a href="cart.html">Cart</a></li>
+                                                <li><a href="pricing.html">Pricing</a></li>
+                                                <li><a href="confirmation.html">Confirmation</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Layout -->
+                                        <div class="col-lg-6 col-md-6 mb-sm-3">
+                                            <ul>
+                                                <li class="dropdown-header">Layout</li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="product-single.html">Product Details</a></li>
+                                                <li><a href="shop-sidebar.html">Shop With Sidebar</a></li>
+
+                                            </ul>
+                                        </div>
+
+                                    </div><!-- / .row -->
+                                </div><!-- / .dropdown-menu -->
+                            </div>
+                        </c:forEach>
+                    </c:if>
+                    <!--                <div class="dropdown-center nav-option">
+                                        <a href="#!" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Shop <span class="tf-ion-ios-arrow-down"></span></a>
+                                        <div class="dropdown-menu">
+                                            <div class="row">
+                    
+                                                 Basic 
+                                                <div class="col-lg-6 col-md-6 mb-sm-3">
+                                                    <ul>
+                                                        <li class="dropdown-header">Pages</li>
+                                                        <li role="separator" class="divider"></li>
+                                                        <li><a href="shop.html">Shop</a></li>
+                                                        <li><a href="checkout.html">Checkout</a></li>
+                                                        <li><a href="cart.html">Cart</a></li>
+                                                        <li><a href="pricing.html">Pricing</a></li>
+                                                        <li><a href="confirmation.html">Confirmation</a></li>
+                    
+                                                    </ul>
+                                                </div>
+                    
+                                                 Layout 
+                                                <div class="col-lg-6 col-md-6 mb-sm-3">
+                                                    <ul>
+                                                        <li class="dropdown-header">Layout</li>
+                                                        <li role="separator" class="divider"></li>
+                                                        <li><a href="product-single.html">Product Details</a></li>
+                                                        <li><a href="shop-sidebar.html">Shop With Sidebar</a></li>
+                    
+                                                    </ul>
+                                                </div>
+                    
+                                            </div> / .row 
+                                        </div> / .dropdown-menu 
+                                    </div>
+                                    <div class="dropdown-center nav-option">
+                                        <a href="#!" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Pages <span class="tf-ion-ios-arrow-down"></span></a>
+                                        <div class="dropdown-menu">
+                                            <div class="row">
+                    
+                                                 Introduction 
+                                                <div class="col-sm-3 col-xs-12">
+                                                    <ul>
+                                                        <li class="dropdown-header">Introduction</li>
+                                                        <li role="separator" class="divider"></li>
+                                                        <li><a href="contact.html">Contact Us</a></li>
+                                                        <li><a href="about.html">About Us</a></li>
+                                                        <li><a href="404.html">404 Page</a></li>
+                                                        <li><a href="coming-soon.html">Coming Soon</a></li>
+                                                        <li><a href="faq.html">FAQ</a></li>
+                                                    </ul>
+                                                </div>
+                    
+                                                 Contact 
+                                                <div class="col-sm-3 col-xs-12">
+                                                    <ul>
+                                                        <li class="dropdown-header">Dashboard</li>
+                                                        <li role="separator" class="divider"></li>
+                                                        <li><a href="dashboard.html">User Interface</a></li>
+                                                        <li><a href="order.html">Orders</a></li>
+                                                        <li><a href="address.html">Address</a></li>
+                                                        <li><a href="profile-details.html">Profile Details</a></li>
+                                                    </ul>
+                                                </div>
+                    
+                                                 Utility 
+                                                <div class="col-sm-3 col-xs-12">
+                                                    <ul>
+                                                        <li class="dropdown-header">Utility</li>
+                                                        <li role="separator" class="divider"></li>
+                                                        <li><a href="login.html">Login Page</a></li>
+                                                        <li><a href="signin.html">Signin Page</a></li>
+                                                        <li><a href="forget-password.html">Forget Password</a></li>
+                                                    </ul>
+                                                </div>
+                    
+                                                 Mega Menu 
+                                                <div class="col-sm-3 col-xs-12">
+                                                    <a href="shop.html">
+                                                        <img class="img-responsive" src="images/shop/header-img.jpg" alt="menu image">
+                                                    </a>
+                                                </div>
+                                            </div> / .row 
+                                        </div>
+                                    </div>-->
+                </div>
+
+            </section>
+        </div>       
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>

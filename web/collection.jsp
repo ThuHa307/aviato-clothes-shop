@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="model.Product" %>
 
@@ -9,7 +10,9 @@
 
         <title>JSP Page</title>
         <style>
-
+            p.name {
+                min-height: 48px;
+            }
             .collection {
                 margin-top: 20px;
             }
@@ -102,6 +105,9 @@
                 border-radius: 100%;
                 font-size: 0;
                 border: 1px solid #ccc4c4;
+            }
+            .input-filter.active ~ label {
+                box-shadow: 0 0 0px 1.5px #000000;
             }
             li label span.den {
                 background: #000000;
@@ -214,6 +220,17 @@
                 cursor: pointer;
                 border-radius: 2px;
             }
+            
+            .price-filter.active > input[type="radio"]:after {
+                background-color: #2E2E2E;
+                border-color: transparent;
+            }
+            .price-filter.active > input[type="radio"]:before {
+                -webkit-transform: rotate(-45deg) scale(1, 1);
+                -moz-transform: rotate(-45deg) scale(1, 1);
+                -ms-transform: rotate(-45deg) scale(1, 1);
+                -o-transform: rotate(-45deg) scale(1, 1);
+            }
             input[type="radio"]:checked:after {
                 background-color: #2E2E2E;
                 border-color: transparent;
@@ -243,11 +260,29 @@
                 margin: 20px 0;
                 text-align: center;
             }
+
+            .size-filter.active ~ label {
+                background: #000;
+                border-color: #000;
+                color: #FFF;
+            }
+
+            .page-item.active > a {
+                background-color: black;
+                border-color: black;
+                color: white !important;
+            }
+
+            .page-link {
+                color: black !important;
+            }
         </style>
     </head>
     <body>
+        <% String color = (String) request.getAttribute("color"); %>
+        <% String size = (String) request.getAttribute("size"); %>
         <% String selectedValue = (String) request.getAttribute("selectedValue"); %>
-        <% ArrayList<Product> data = (ArrayList<Product>) request.getAttribute("data"); %>
+
         <%@ include file="header.jsp" %>
         <div class="collection">
             <h2 class="title">Áo thun</h2>
@@ -274,18 +309,18 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <div class="collapse content-item-filter mausac" id="collapseColor">
                                     <ul>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="black" data-name="Đen" id="filter2-den"><label for="filter2-den"><span class="den">Đen</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="white" data-name="Trắng" id="filter2-trang"><label for="filter2-trang"><span class="trang">Trắng</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="red" data-name="Đỏ" id="filter2-do"><label for="filter2-do"><span class="do">Đỏ</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="gray" data-name="Xám" id="filter2-xam"><label for="filter2-xam"><span class="xam">Xám</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="blue" data-name="Xanh dương" id="filter2-xanh-duong"><label for="filter2-xanh-duong"><span class="xanh-duong">Xanh dương</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="pink" data-name="Hồng" id="filter2-hong"><label for="filter2-hong"><span class="hong">Hồng</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="yellow" data-name="Vàng" id="filter2-vang"><label for="filter2-vang"><span class="vang">Vàng</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="purple" data-name="Tím" id="filter2-tim"><label for="filter2-tim"><span class="tim">Tím</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="brown" data-name="Nâu" id="filter2-nau"><label for="filter2-nau"><span class="nau">Nâu</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="green" data-name="Xanh lá" id="filter2-xanh-la"><label for="filter2-xanh-la"><span class="xanh-la">Xanh lá</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="nude" data-name="Nude" id="filter2-nude"><label for="filter2-nude"><span class="nude">Nude</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter2" value="orange" data-name="Cam" id="filter2-cam"><label for="filter2-cam"><span class="cam">Cam</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "black".equals(color) ? "active" : "" %>" name="filter2" value="black" data-name="Đen" id="filter2-den" ><label for="filter2-den"><span class="den">Đen</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "white".equals(color) ? "active" : "" %>" name="filter2" value="white" data-name="Trắng" id="filter2-trang" ><label for="filter2-trang"><span class="trang">Trắng</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "red".equals(color) ? "active" : "" %>" name="filter2" value="red" data-name="Đỏ" id="filter2-do" ><label for="filter2-do"><span class="do">Đỏ</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "gray".equals(color) ? "active" : "" %>" name="filter2" value="gray" data-name="Xám" id="filter2-xam"><label for="filter2-xam"><span class="xam">Xám</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "blue".equals(color) ? "active" : "" %>" name="filter2" value="blue" data-name="Xanh dương" id="filter2-xanh-duong"><label for="filter2-xanh-duong"><span class="xanh-duong">Xanh dương</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "pink".equals(color) ? "active" : "" %>" name="filter2" value="pink" data-name="Hồng" id="filter2-hong"><label for="filter2-hong"><span class="hong">Hồng</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "yellow".equals(color) ? "active" : "" %>" name="filter2" value="yellow" data-name="Vàng" id="filter2-vang"><label for="filter2-vang"><span class="vang">Vàng</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "purple".equals(color) ? "active" : "" %>" name="filter2" value="purple" data-name="Tím" id="filter2-tim"><label for="filter2-tim"><span class="tim">Tím</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "brown".equals(color) ? "active" : "" %>" name="filter2" value="brown" data-name="Nâu" id="filter2-nau"><label for="filter2-nau"><span class="nau">Nâu</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "green".equals(color) ? "active" : "" %>" name="filter2" value="green" data-name="Xanh lá" id="filter2-xanh-la"><label for="filter2-xanh-la"><span class="xanh-la">Xanh lá</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "nude".equals(color) ? "active" : "" %>" name="filter2" value="nude" data-name="Nude" id="filter2-nude"><label for="filter2-nude"><span class="nude">Nude</span></label></li>
+                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "orange".equals(color) ? "active" : "" %>" name="filter2" value="orange" data-name="Cam" id="filter2-cam"><label for="filter2-cam"><span class="cam">Cam</span></label></li>
 
                                     </ul>
                                 </div>                    
@@ -304,15 +339,15 @@
                                         <label>Quần áo</label>
                                         <ul>
                                             <li class="item-size-text">
-                                                <input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter4" value="S" id="filter4-S">
+                                                <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "S".equals(size) ? "active" : "" %>" name="filter4" value="S" id="filter4-S">
                                                 <label for="filter4-S"><span>S</span></label>
                                             </li>
                                             <li class="item-size-text">
-                                                <input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter4" value="M" id="filter4-M">
+                                                <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "M".equals(size) ? "active" : "" %>" name="filter4" value="M" id="filter4-M">
                                                 <label for="filter4-M"><span>M</span></label>
                                             </li>
                                             <li class="item-size-text">
-                                                <input type="checkbox" onchange="submitIfChecked()" class="input-filter" name="filter4" value="L" id="filter4-L">
+                                                <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "L".equals(size) ? "active" : "" %>" name="filter4" value="L" id="filter4-L">
                                                 <label for="filter4-L"><span>L</span></label>
                                             </li>
                                         </ul>
@@ -331,21 +366,21 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <div class="collapse content-item-filter gia" id="collapsePrice">
                                     <ul>
-                                        <li>
-                                            <input type="radio" onchange="submitIfChecked()" class="input-filter" name="filter-price" value="(price_variant:product < 1000000)" data-price="1000000" id="price-filter-1">
+                                        <li class="price-filter <c:out value="${price == 'sm1000000' ? 'active' : ''}" />" >
+                                            <input type="radio" onchange="submitIfChecked()" name="filter-price" value="sm1000000" data-price="1000000" id="price-filter-1">
                                             <label for="price-filter-1">Dưới 1,000,000đ</label>
                                         </li>
-                                        <li>
-                                            <input type="radio" onchange="submitIfChecked()" class="input-filter" name="filter-price" value="(price_variant:product range 1000000_2000000)" data-price="1000000_2000000" id="price-filter-2">
+                                        <li class="price-filter <c:out value="${price == 'bt1000000-2000000' ? 'active' : ''}" />" >
+                                            <input type="radio" onchange="submitIfChecked()" name="filter-price" value="bt1000000-2000000" data-price="1000000_2000000" id="price-filter-2">
                                             <label for="price-filter-2">1,000,000đ - 2,000,000đ</label>
                                         </li>
-                                        <li>
-                                            <input type="radio" onchange="submitIfChecked()" class="input-filter" name="filter-price" value="(price_variant:product range 2000000_3000000)" data-price="2000000_3000000" id="price-filter-3">
+                                        <li class="price-filter <c:out value="${price == 'bt2000000-3000000' ? 'active' : ''}" />" >
+                                            <input type="radio" onchange="submitIfChecked()" name="filter-price" value="bt2000000-3000000" data-price="2000000_3000000" id="price-filter-3">
                                             <label for="price-filter-3">2,000,000đ - 3,000,000đ</label>
                                         </li>
-                                        <li>
-                                            <input type="radio" onchange="submitIfChecked()" class="input-filter" name="filter-price" value="(price_variant:product > 4000000)" data-price="4000000" id="price-filter-4">
-                                            <label for="price-filter-4">Trên 4,000,000đ</label>
+                                        <li class="price-filter <c:out value="${price == 'lg3000000' ? 'active' : ''}" />" >
+                                            <input type="radio" onchange="submitIfChecked()" name="filter-price" value="lg3000000" data-price="3000000" id="price-filter-4">
+                                            <label for="price-filter-4">Trên 3,000,000đ</label>
                                         </li>
                                     </ul>
 
@@ -370,40 +405,51 @@
             </div>
             <div class="products">
                 <div class="row pd-row">
-                    <% if (data != null && !data.isEmpty()) {
-                    for (Product product : data) {                   
-                    %>
-                    <div class="product col-md-3 ">
-                        <div class="img">
-                            <img src="<%= product.getImage() %>">                
-                        </div>
-                        <div class="detail">
-                            <p class="name"><%= product.getName() %></p>
-                            <div class="price">
-                                <span class="cost"><%= Product.formatCurrency(product.getPrice()) %></span>
-                            </div>
-                        </div>
-                    </div>           
-                    <% 
-                    }
-                } else {
-                    %>
-                    <h4>Không có sản phẩm để hiển thị.</h4>
-                    <% } %>
+                    <c:if test="${not empty data}">
+                        <c:forEach var="product" items="${data}">
+                            <div class="product col-md-3 ">
+                                <div class="img">
+                                    <img src="${product.image}">                
+                                </div>
+                                <div class="detail">
+                                    <p class="name">${product.name}</p>
+                                    <div class="price">
+                                        <span class="cost">${Product.formatCurrency(product.getPrice())}</span>
+                                    </div>
+                                </div>
+                            </div> 
+                        </c:forEach>
+                    </c:if>
                 </div>
             </div>
 
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    <c:set var="isActive" value="active" />
+                    <c:set var="isDisabled" value="disabled " />
+
+                    <li class="page-item <c:out value="${page == 1 ? 'disabled' : ''}" />">
+                        <a class="page-link" href="product?page=${page - 1}" tabindex="-1">Previous</a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
+                    <c:forEach var="i" begin="1" end="${pageCount}">
+                        <c:choose>
+                            <c:when test="${i == page}">
+                                <li class="page-item <c:out value="${isActive}" />">
+                                    <a class="page-link " href="">${i}</a></li>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item">
+                                    <a class="page-link" href="product?page=${i}">${i}</a>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                    <li class="page-item <c:out value="${page == pageCount ? 'disabled' : ''}" />">
+                        <a class="page-link" href="product?page=${page + 1}">Next</a>
                     </li>
+
+
                 </ul>
             </nav>
 
@@ -469,7 +515,6 @@
                     form.submit();
                 }
             }
-
         </script>
 
     </body>

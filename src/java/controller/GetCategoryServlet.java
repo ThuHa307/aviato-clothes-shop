@@ -5,7 +5,7 @@
 
 package controller;
 
-import dao.ProductDAO;
+import dao.CategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,19 +13,18 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import model.Product;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.Category;
 
 /**
  *
  * @author PC
  */
-@WebServlet(name="FilterProduct", urlPatterns={"/filter"})
-public class FilterProductServlet extends HttpServlet {
+@WebServlet(name="GetCategoryServlet", urlPatterns={"/category"})
+public class GetCategoryServlet extends HttpServlet {
    
-    private ProductDAO prDao = new ProductDAO();
-    private String color = "";
-    private String size = "";
+    private CategoryDAO catDao = new CategoryDAO();
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -41,10 +40,10 @@ public class FilterProductServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet FilterProduct</title>");  
+            out.println("<title>Servlet GetCategoryServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet FilterProduct at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet GetCategoryServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,7 +60,10 @@ public class FilterProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        List<Category> categories = catDao.readProducts();
+        session.setAttribute("categories", categories);
+        request.getRequestDispatcher("header.jsp").forward(request, response);
     } 
 
     /** 
@@ -74,16 +76,7 @@ public class FilterProductServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        color = request.getParameter("filter2") != null ? request.getParameter("filter2") : color;
-        size = request.getParameter("filter4") != null ? request.getParameter("filter4") : size;
-        //String price = request.getParameter("filter-price") != null ? request.getParameter("filter-price") : "";
-        ArrayList<Product> data = prDao.filter(color, size);
-        request.setAttribute("data", data);
-        System.out.println(color);
-        System.out.println(size);
-        
-        //System.out.println(price);
-        request.getRequestDispatcher("collection.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /** 
