@@ -17,12 +17,13 @@ public class ProductDAO {
 
     //private final String readAll = "SELECT ProductName, description, price, type, color, Image AS UniqueColor "
     //                                + "FROM Product GROUP BY ProductName, description, price, type, color, Image";
-    private final String readAll = "select * from product";
+    private final String readByType = "select * from product where type = ? and Quantity > 0";
 
-    public List<Product> readProducts() {
+    public List<Product> readProductsByType(String typeStr) {
         ArrayList<Product> results = new ArrayList<>();
         try (Connection con = DBConnection.getConnection()) {
-            PreparedStatement stm = con.prepareStatement(readAll);
+            PreparedStatement stm = con.prepareStatement(readByType);
+            stm.setString(1, typeStr);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(1);
@@ -36,8 +37,8 @@ public class ProductDAO {
                 int quantity = rs.getInt(9);
                 String image = rs.getString(10);
                 int categoryId = rs.getInt(11);
-
-                Product x = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId);
+                String colorImage = rs.getString(12);
+                Product x = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId, colorImage);
                 results.add(x);
             }
         } catch (Exception e) {
@@ -46,13 +47,10 @@ public class ProductDAO {
         return Product.removeDuplicateProducts(results);
     }
 
-    public ArrayList<Product> filter(String colorStr, String sizeStr, String priceStr) {
-        ArrayList<Product> results = new ArrayList<>();       
-        StringBuilder sql = new StringBuilder();
-        String filterSql = filterSql(colorStr, sizeStr, filterPrice(priceStr));
+    public List<Product> readProducts(String sql) {
+        ArrayList<Product> results = new ArrayList<>();
         try (Connection con = DBConnection.getConnection()) {
-            
-            PreparedStatement stm = con.prepareStatement(filterSql);
+            PreparedStatement stm = con.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(1);
@@ -66,8 +64,8 @@ public class ProductDAO {
                 int quantity = rs.getInt(9);
                 String image = rs.getString(10);
                 int categoryId = rs.getInt(11);
-
-                Product x = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId);
+                String colorImage = rs.getString(12);
+                Product x = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId, colorImage);
                 results.add(x);
             }
         } catch (Exception e) {
@@ -76,26 +74,103 @@ public class ProductDAO {
         return Product.removeDuplicateProducts(results);
     }
 
-    private String filterSql(String color, String size, String price) {
+    public ArrayList<Product> search(String value) {
+        ArrayList<Product> results = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection()) {
+            PreparedStatement stm = con.prepareStatement("SELECT TOP 5 * FROM Product WHERE ProductName LIKE ? and Quantity > 0");
+            stm.setString(1, "%" + value + "%");
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String description = rs.getString(3);
+                int price = rs.getInt(4);
+                int oriPrice = rs.getInt(5);
+                String type = rs.getString(6);
+                String color = rs.getString(7);
+                String size = rs.getString(8);
+                int quantity = rs.getInt(9);
+                String image = rs.getString(10);
+                int categoryId = rs.getInt(11);
+                String colorImage = rs.getString(12);
+                Product x = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId, colorImage);
+                results.add(x);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+    
+    public ArrayList<Product> searchAll(String value) {
+        ArrayList<Product> results = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection()) {
+            PreparedStatement stm = con.prepareStatement("SELECT * FROM Product WHERE ProductName LIKE ? and Quantity > 0");
+            stm.setString(1, "%" + value + "%");
+            //System.out.println(stm.toString());
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String description = rs.getString(3);
+                int price = rs.getInt(4);
+                int oriPrice = rs.getInt(5);
+                String type = rs.getString(6);
+                String color = rs.getString(7);
+                String size = rs.getString(8);
+                int quantity = rs.getInt(9);
+                String image = rs.getString(10);
+                int categoryId = rs.getInt(11);
+                String colorImage = rs.getString(12);
+                Product x = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId, colorImage);
+                //System.out.println(x);
+                results.add(x);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    public List<String> getType(int categoryId) {
+        ArrayList<String> results = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection()) {
+            PreparedStatement stm = con.prepareStatement("select distinct Type from Product where CategoryID = ? and Quantity > 0");
+            stm.setInt(1, categoryId);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                String name = rs.getString(1);
+                results.add(name);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    public List<Product> filter(String colorStr, String sizeStr, String priceStr, String type) {
+        String filterSql = filterSql(colorStr, sizeStr, filterPrice(priceStr), type);
+        List<Product> results = readProducts(filterSql);
+        return results;
+    }
+
+    private String filterSql(String color, String size, String price, String type) {
         String filtersql = "";
         if (!color.equals("") && !size.equals("") && !price.equals("")) {
             filtersql = "select * from product where quantity > 0 and "
-                    + "size = '" + size + "' and color = '" + color + "' and " + price;
-        }
-        else if (!color.equals("") && !price.equals("")) {
-            filtersql = "select * from product where quantity > 0 and color = '" + color + "' and " + price;
-        }
-        else if (!size.equals("") && !price.equals("")) {
-            filtersql = "select * from product where quantity > 0 and size = '" + size + "' and " + price;
-        }
-        else if (!color.equals("") && !size.equals("")) {
-            filtersql = "select * from product where quantity > 0 and size = '" + size + "' and color = '" + color + "'";
+                    + "size = '" + size + "' and color = '" + color + "' and " + price + " and type = '" + type + "'";
+        } else if (!color.equals("") && !price.equals("")) {
+            filtersql = "select * from product where quantity > 0 and color = '" + color + "' and " + price + " and type = '" + type + "'";
+        } else if (!size.equals("") && !price.equals("")) {
+            filtersql = "select * from product where quantity > 0 and size = '" + size + "' and " + price + " and type = '" + type + "'";
+        } else if (!color.equals("") && !size.equals("")) {
+            filtersql = "select * from product where quantity > 0 and size = '" + size + "' and color = '" + color + "'" + " and type = '" + type + "'";
         } else if (!color.equals("")) {
-            filtersql = "select * from product where quantity > 0 and color = '" + color + "'";
+            filtersql = "select * from product where quantity > 0 and color = '" + color + "'" + " and type = '" + type + "'";
         } else if (!size.equals("")) {
-            filtersql = "select * from product where quantity > 0 and size = '" + size + "'";
+            filtersql = "select * from product where quantity > 0 and size = '" + size + "'" + " and type = '" + type + "'";
         } else if (!price.equals("")) {
-            filtersql = "select * from product where quantity > 0 and " + price;
+            filtersql = "select * from product where quantity > 0 and " + price + " and type = '" + type + "'";
         }
         return filtersql;
     }
@@ -113,5 +188,65 @@ public class ProductDAO {
             default:
                 return "";
         }
+    }
+    
+    public Product findById(String idStr) {
+        
+        try (Connection con = DBConnection.getConnection()) {
+            PreparedStatement stm = con.prepareStatement("SELECT * FROM Product WHERE ProductID = ? and Quantity > 0");
+            stm.setInt(1, Integer.parseInt(idStr));
+            //System.out.println(stm.toString());
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String description = rs.getString(3);
+                int price = rs.getInt(4);
+                int oriPrice = rs.getInt(5);
+                String type = rs.getString(6);
+                String color = rs.getString(7);
+                String size = rs.getString(8);
+                int quantity = rs.getInt(9);
+                String image = rs.getString(10);
+                int categoryId = rs.getInt(11);
+                String colorImage = rs.getString(12);
+                Product result = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId, colorImage);
+                //System.out.println(x);
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public List<Product> findByName(String nameStr) {
+        ArrayList<Product> results = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection()) {
+            PreparedStatement stm = con.prepareStatement("SELECT * FROM Product WHERE ProductName = ? and Quantity > 0");
+            stm.setString(1, nameStr);
+            //System.out.println(stm.toString());
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String description = rs.getString(3);
+                int price = rs.getInt(4);
+                int oriPrice = rs.getInt(5);
+                String type = rs.getString(6);
+                String color = rs.getString(7);
+                String size = rs.getString(8);
+                int quantity = rs.getInt(9);
+                String image = rs.getString(10);
+                int categoryId = rs.getInt(11);
+                String colorImage = rs.getString(12);
+                Product result = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId, colorImage);
+                //System.out.println(x);
+                results.add(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
     }
 }

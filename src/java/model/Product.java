@@ -7,8 +7,10 @@ package model;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -27,6 +29,7 @@ public class Product {
     private int quantity;
     private String image;
     private int categoryId;
+    private String colorImage;
 
     public Product() {
     }    
@@ -40,7 +43,7 @@ public class Product {
         this.image = image;
     }   
     
-    public Product(int id, String name, String description, int price, int oriPrice, String type, String color, String size, int quantity, String iamge, int categoryId) {
+    public Product(int id, String name, String description, int price, int oriPrice, String type, String color, String size, int quantity, String iamge, int categoryId, String colorImage) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -52,6 +55,7 @@ public class Product {
         this.quantity = quantity;
         this.image = iamge;
         this.categoryId = categoryId;
+        this.colorImage = colorImage;
     }
 
     public int getId() {
@@ -96,6 +100,14 @@ public class Product {
 
     public String getType() {
         return type;
+    }
+
+    public String getColorImage() {
+        return colorImage;
+    }
+
+    public void setColorImage(String colorImage) {
+        this.colorImage = colorImage;
     }
 
     public void setType(String type) {
@@ -154,7 +166,7 @@ public class Product {
         return formatter.format(number) + "đ";
     }
     
-    public static ArrayList<Product> removeDuplicateProducts(ArrayList<Product> products) {
+    public static List<Product> removeDuplicateProducts(ArrayList<Product> products) {
         Map<String, Product> productMap = new HashMap<>();
 
         for (Product product : products) {
@@ -165,5 +177,15 @@ public class Product {
         }
 
         return new ArrayList<>(productMap.values());
+    }
+    
+    public static Set<String> getUniqueSizes(List<Product> products) {
+        Set<String> uniqueSizes = new HashSet<>();
+
+        for (Product product : products) {
+            uniqueSizes.add(product.getSize());
+        }
+
+        return uniqueSizes;
     }
 }

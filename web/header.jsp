@@ -96,8 +96,16 @@
                 -o-transition: all .6s ease-in-out; /** Opera **/
             }
 
+            .dropdown-menu.show.search-history {
+                width: 100%;
+            }
+
             .search_text:focus {
                 outline: none !important;
+            }
+
+            .search_icon {
+                cursor: pointer;
             }
 
             .search_text:focus + .search_icon{
@@ -186,6 +194,43 @@
             .nav-option {
                 margin: 0 15px;
             }
+
+            .search-result {
+                box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+                border-radius: 10px;
+            }
+
+            .result-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+            }
+
+            .result-item:hover {
+                background-color: #f8f9fa;
+                cursor: pointer;
+            }
+
+            .result-item p {
+                margin: 0;
+                padding-left: 20px;
+            }
+
+            .result-item img {
+                width: 50px;
+            }
+
+            .see-all {
+                text-align: center;
+                background-color: black;
+                padding: 10px;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+            }
+
+            .see-all a {
+                color: white;
+            }
         </style>
     </head>
     <body>
@@ -195,7 +240,7 @@
                     <div class="row">
                         <div class="col-md-4 col-xs-12 col-sm-4">
                             <!-- Search -->
-                            <div class="search_box">
+                            <form id="search-form" class="search_box" action="search" method="post">
                                 <div class="search">
                                     <div class= "select_area">
                                         <i class="fas fa-tshirt"></i>
@@ -204,12 +249,26 @@
 
                                     <div class="line"></div>
 
-                                    <div class = "text_and-icon">
-                                        <input type="text" class="search_text" id="search_text" placeholder="Search by keyword...">
-                                        <i class="fas fa-search search_icon"></i>
+                                    <div class="text_and-icon" action="search" method="post">
+                                        <input type="text" name="search" value="${searchValue}" class="search_text" id="search_text" oninput="onInput()" placeholder="Search by keyword...">
+                                        <i class="fas fa-search search_icon" onclick="submitForm()"></i>
                                     </div>
                                 </div> 
-                            </div>
+                                <c:if test="${not empty searchdata}">
+                                    <div class="search-result">
+                                        <c:forEach var="product" items="${searchdata}">
+                                            <a class="result-item" href="viewdetail?productId=${product.id}">
+                                                <img src="${product.image}">  
+                                                <p>${product.name}</p>                                
+                                            </a>
+                                        </c:forEach>
+                                        <div class="see-all">
+                                            <a href="search">Xem tất cả</a>
+                                        </div>
+                                    </div>                                                                    
+                                </c:if>
+
+                            </form>
                         </div>
                         <div class="col-md-4 col-xs-12 col-sm-4">
                             <div class="logo text-center">
@@ -241,131 +300,66 @@
             <section class="menu">
                 <div class="container navigation">
                     <div class="nav-option">
-                        <a href="#">Trang chủ</a>
+                        <a href="category">Trang chủ</a>
                     </div>
+
                     <c:if test="${not empty categories}">
+                        <c:set var="mapType" value="${types}"/>
                         <c:forEach var="category" items="${categories}">
+                            <c:set var="categoryId" value="${category.id}"/>
                             <div class="dropdown-center nav-option">
-                                <a href="#!" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">${category.name}<span class="tf-ion-ios-arrow-down"></span></a>
-                                <div class="dropdown-menu">
-                                    <div class="row">
-                                        <!-- Basic -->
-                                        <div class="col-lg-6 col-md-6 mb-sm-3">
-                                            <ul>
-                                                <li class="dropdown-header">Pages</li>
-                                                <li role="separator" class="divider"></li>
-                                                <li><a href="shop.html">Shop</a></li>
-                                                <li><a href="checkout.html">Checkout</a></li>
-                                                <li><a href="cart.html">Cart</a></li>
-                                                <li><a href="pricing.html">Pricing</a></li>
-                                                <li><a href="confirmation.html">Confirmation</a></li>
-                                            </ul>
-                                        </div>
+                                <a class="dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false" href="type?categoryId=${category.id}" >
+                                    ${category.name}
+                                    <span class="tf-ion-ios-arrow-down"></span>
+                                </a>
 
-                                        <!-- Layout -->
-                                        <div class="col-lg-6 col-md-6 mb-sm-3">
-                                            <ul>
-                                                <li class="dropdown-header">Layout</li>
-                                                <li role="separator" class="divider"></li>
-                                                <li><a href="product-single.html">Product Details</a></li>
-                                                <li><a href="shop-sidebar.html">Shop With Sidebar</a></li>
+                                <c:if test="${not empty types}">
+                                    <div class="dropdown-menu">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <ul>
+                                                    <c:forEach var="type" items="${mapType.get(categoryId)}">
+                                                        <li><a href="product?type=${type}">${type}</a></li>
+                                                        </c:forEach>    
+                                                </ul>
+                                            </div>
+                                        </div><!-- / .row -->
+                                    </div><!-- / .dropdown-menu -->
+                                </c:if>
 
-                                            </ul>
-                                        </div>
 
-                                    </div><!-- / .row -->
-                                </div><!-- / .dropdown-menu -->
                             </div>
                         </c:forEach>
                     </c:if>
-                    <!--                <div class="dropdown-center nav-option">
-                                        <a href="#!" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Shop <span class="tf-ion-ios-arrow-down"></span></a>
-                                        <div class="dropdown-menu">
-                                            <div class="row">
-                    
-                                                 Basic 
-                                                <div class="col-lg-6 col-md-6 mb-sm-3">
-                                                    <ul>
-                                                        <li class="dropdown-header">Pages</li>
-                                                        <li role="separator" class="divider"></li>
-                                                        <li><a href="shop.html">Shop</a></li>
-                                                        <li><a href="checkout.html">Checkout</a></li>
-                                                        <li><a href="cart.html">Cart</a></li>
-                                                        <li><a href="pricing.html">Pricing</a></li>
-                                                        <li><a href="confirmation.html">Confirmation</a></li>
-                    
-                                                    </ul>
-                                                </div>
-                    
-                                                 Layout 
-                                                <div class="col-lg-6 col-md-6 mb-sm-3">
-                                                    <ul>
-                                                        <li class="dropdown-header">Layout</li>
-                                                        <li role="separator" class="divider"></li>
-                                                        <li><a href="product-single.html">Product Details</a></li>
-                                                        <li><a href="shop-sidebar.html">Shop With Sidebar</a></li>
-                    
-                                                    </ul>
-                                                </div>
-                    
-                                            </div> / .row 
-                                        </div> / .dropdown-menu 
-                                    </div>
-                                    <div class="dropdown-center nav-option">
-                                        <a href="#!" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Pages <span class="tf-ion-ios-arrow-down"></span></a>
-                                        <div class="dropdown-menu">
-                                            <div class="row">
-                    
-                                                 Introduction 
-                                                <div class="col-sm-3 col-xs-12">
-                                                    <ul>
-                                                        <li class="dropdown-header">Introduction</li>
-                                                        <li role="separator" class="divider"></li>
-                                                        <li><a href="contact.html">Contact Us</a></li>
-                                                        <li><a href="about.html">About Us</a></li>
-                                                        <li><a href="404.html">404 Page</a></li>
-                                                        <li><a href="coming-soon.html">Coming Soon</a></li>
-                                                        <li><a href="faq.html">FAQ</a></li>
-                                                    </ul>
-                                                </div>
-                    
-                                                 Contact 
-                                                <div class="col-sm-3 col-xs-12">
-                                                    <ul>
-                                                        <li class="dropdown-header">Dashboard</li>
-                                                        <li role="separator" class="divider"></li>
-                                                        <li><a href="dashboard.html">User Interface</a></li>
-                                                        <li><a href="order.html">Orders</a></li>
-                                                        <li><a href="address.html">Address</a></li>
-                                                        <li><a href="profile-details.html">Profile Details</a></li>
-                                                    </ul>
-                                                </div>
-                    
-                                                 Utility 
-                                                <div class="col-sm-3 col-xs-12">
-                                                    <ul>
-                                                        <li class="dropdown-header">Utility</li>
-                                                        <li role="separator" class="divider"></li>
-                                                        <li><a href="login.html">Login Page</a></li>
-                                                        <li><a href="signin.html">Signin Page</a></li>
-                                                        <li><a href="forget-password.html">Forget Password</a></li>
-                                                    </ul>
-                                                </div>
-                    
-                                                 Mega Menu 
-                                                <div class="col-sm-3 col-xs-12">
-                                                    <a href="shop.html">
-                                                        <img class="img-responsive" src="images/shop/header-img.jpg" alt="menu image">
-                                                    </a>
-                                                </div>
-                                            </div> / .row 
-                                        </div>
-                                    </div>-->
+
                 </div>
 
             </section>
         </div>       
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script>
+            var timer;
+            var search = document.querySelector(".search");
+            var searchResult = document.querySelector(".search-result");
+            var isVisible = true;
+            search.addEventListener("click", function () {
+                if (isVisible) {
+                    searchResult.style.display = "none";
+                } else {
+                    searchResult.style.display = "block";
+                }
+                isVisible = !isVisible;
+            });
+
+            function onInput() {
+                clearTimeout(timer);
+                timer = setTimeout(submitForm, 2000); // Gọi submitForm sau 5 giây
+            }
+
+            function submitForm() {
+                document.getElementById("search-form").submit(); // Gửi dữ liệu form đến Servlet
+            }
+        </script>
     </body>
 </html>

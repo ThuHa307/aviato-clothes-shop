@@ -31,7 +31,8 @@ public class GetProductServlet extends HttpServlet {
     private String color = "";
     private String size = "";
     private String price = "";
-    private List<Product> products = prDao.readProducts();
+    private String type = "";
+    private List<Product> products;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -71,7 +72,23 @@ public class GetProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        List<Product> searchData = (List<Product>) request.getAttribute("searchData");
+        if (searchData != null) {
+            request.setAttribute("flag", "false");
+            products = Product.removeDuplicateProducts((ArrayList<Product>) searchData);
+        }
+        else request.setAttribute("flag", "true");
 
+        if (request.getParameter("type") != null) {
+            type = request.getParameter("type");
+        }
+        if (type != null && request.getParameter("type") != null) {
+            color="";
+            size="";
+            price="";
+            products = prDao.readProductsByType(type);
+        }
         try {
             String page = request.getParameter("page");
             int pageCount = (int) Math.ceil((double) products.size() / PAGE_SIZE);
@@ -85,6 +102,7 @@ public class GetProductServlet extends HttpServlet {
             request.setAttribute("data", pageStudents);
             request.setAttribute("page", currentPage);
             request.setAttribute("pageCount", pageCount);
+            session.setAttribute("type", request.getParameter("type") == null ? "Kết quả tìm được (" + products.size() + ")" : type);
             request.getRequestDispatcher("collection.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,7 +125,7 @@ public class GetProductServlet extends HttpServlet {
         size = request.getParameter("filter4") != null ? request.getParameter("filter4") : size;
         price = request.getParameter("filter-price") != null ? request.getParameter("filter-price") : price;
         if (!"".equals(color) || !"".equals(size) || !"".equals(price)) {
-            products = prDao.filter(color, size, price);
+            products = prDao.filter(color, size, price, type);
         }
         if (products != null && option != null) {
             sort(products, option);

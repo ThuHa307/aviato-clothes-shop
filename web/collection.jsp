@@ -220,7 +220,7 @@
                 cursor: pointer;
                 border-radius: 2px;
             }
-            
+
             .price-filter.active > input[type="radio"]:after {
                 background-color: #2E2E2E;
                 border-color: transparent;
@@ -276,6 +276,14 @@
             .page-link {
                 color: black !important;
             }
+
+            button.btn-view-details {
+                width: 100%;
+                background-color: black;
+                color: white;
+                padding: 7px 0;
+                margin-bottom: 10px;
+            }
         </style>
     </head>
     <body>
@@ -285,129 +293,132 @@
 
         <%@ include file="header.jsp" %>
         <div class="collection">
-            <h2 class="title">Áo thun</h2>
-            <div class="actions">
-                <div class="filter-collection" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                    <span>Bộ lọc</span> 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1.33325 2.66699H8.83325" stroke="black" stroke-linecap="square"></path><path d="M12.1665 2.66699L14.6665 2.66699" stroke="black" stroke-linecap="square"></path><path d="M7.1665 9.33301L14.6665 9.33301" stroke="black" stroke-linecap="square"></path><path d="M1.33325 9.33301H3.83325" stroke="black" stroke-linecap="square"></path><ellipse cx="5.49992" cy="9.33366" rx="1.66667" ry="1.66667" stroke="black"></ellipse><ellipse cx="10.4999" cy="2.66667" rx="1.66667" ry="1.66667" stroke="black"></ellipse></svg>
-                </div>
-                <!--<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Toggle right offcanvas</button>-->
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="offcanvasRightLabel">Bộ lọc</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <h2 class="title">${type}</h2>
+            <c:if test="${flag eq 'true'}">
+                <div class="actions">
+                    <div class="filter-collection" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                        <span>Bộ lọc</span> 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1.33325 2.66699H8.83325" stroke="black" stroke-linecap="square"></path><path d="M12.1665 2.66699L14.6665 2.66699" stroke="black" stroke-linecap="square"></path><path d="M7.1665 9.33301L14.6665 9.33301" stroke="black" stroke-linecap="square"></path><path d="M1.33325 9.33301H3.83325" stroke="black" stroke-linecap="square"></path><ellipse cx="5.49992" cy="9.33366" rx="1.66667" ry="1.66667" stroke="black"></ellipse><ellipse cx="10.4999" cy="2.66667" rx="1.66667" ry="1.66667" stroke="black"></ellipse></svg>
                     </div>
-                    <div class="offcanvas-body">
-                        <form action="product" method="post" id="filterForm">
-                            <div class="colors filter-option">
-                                <div class="filter-title" data-bs-toggle="collapse" href="#collapseColor" role="button" onclick="handleRotate()">
-                                    <p>Màu sắc</p>
-                                    <div class="arrows-filter">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L4.75 1.25L8.5 5" stroke="black" stroke-width="1.2" stroke-linecap="square"></path></svg>
+                    <!--<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Toggle right offcanvas</button>-->
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasRightLabel">Bộ lọc</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <form action="product" method="post" id="filterForm">
+                                <div class="colors filter-option">
+                                    <div class="filter-title" data-bs-toggle="collapse" href="#collapseColor" role="button" onclick="handleRotate()">
+                                        <p>Màu sắc</p>
+                                        <div class="arrows-filter">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L4.75 1.25L8.5 5" stroke="black" stroke-width="1.2" stroke-linecap="square"></path></svg>
+                                        </div>
                                     </div>
-                                </div>
-                                <li><hr class="dropdown-divider"></li>
-                                <div class="collapse content-item-filter mausac" id="collapseColor">
-                                    <ul>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "black".equals(color) ? "active" : "" %>" name="filter2" value="black" data-name="Đen" id="filter2-den" ><label for="filter2-den"><span class="den">Đen</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "white".equals(color) ? "active" : "" %>" name="filter2" value="white" data-name="Trắng" id="filter2-trang" ><label for="filter2-trang"><span class="trang">Trắng</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "red".equals(color) ? "active" : "" %>" name="filter2" value="red" data-name="Đỏ" id="filter2-do" ><label for="filter2-do"><span class="do">Đỏ</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "gray".equals(color) ? "active" : "" %>" name="filter2" value="gray" data-name="Xám" id="filter2-xam"><label for="filter2-xam"><span class="xam">Xám</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "blue".equals(color) ? "active" : "" %>" name="filter2" value="blue" data-name="Xanh dương" id="filter2-xanh-duong"><label for="filter2-xanh-duong"><span class="xanh-duong">Xanh dương</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "pink".equals(color) ? "active" : "" %>" name="filter2" value="pink" data-name="Hồng" id="filter2-hong"><label for="filter2-hong"><span class="hong">Hồng</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "yellow".equals(color) ? "active" : "" %>" name="filter2" value="yellow" data-name="Vàng" id="filter2-vang"><label for="filter2-vang"><span class="vang">Vàng</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "purple".equals(color) ? "active" : "" %>" name="filter2" value="purple" data-name="Tím" id="filter2-tim"><label for="filter2-tim"><span class="tim">Tím</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "brown".equals(color) ? "active" : "" %>" name="filter2" value="brown" data-name="Nâu" id="filter2-nau"><label for="filter2-nau"><span class="nau">Nâu</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "green".equals(color) ? "active" : "" %>" name="filter2" value="green" data-name="Xanh lá" id="filter2-xanh-la"><label for="filter2-xanh-la"><span class="xanh-la">Xanh lá</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "nude".equals(color) ? "active" : "" %>" name="filter2" value="nude" data-name="Nude" id="filter2-nude"><label for="filter2-nude"><span class="nude">Nude</span></label></li>
-                                        <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "orange".equals(color) ? "active" : "" %>" name="filter2" value="orange" data-name="Cam" id="filter2-cam"><label for="filter2-cam"><span class="cam">Cam</span></label></li>
-
-                                    </ul>
-                                </div>                    
-                            </div>
-
-                            <div class="size filter-option">
-                                <div class="filter-title" data-bs-toggle="collapse" href="#collapseSize" role="button" onclick="handleRotate()">
-                                    <p>Kích thước</p>
-                                    <div class="arrows-filter">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L4.75 1.25L8.5 5" stroke="black" stroke-width="1.2" stroke-linecap="square"></path></svg>
-                                    </div>
-                                </div>
-                                <li><hr class="dropdown-divider"></li>
-                                <div class="collapse content-item-filter kichthuoc" id="collapseSize">
-                                    <div class="item-filter-size" data-size="1">
-                                        <label>Quần áo</label>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <div class="collapse content-item-filter mausac" id="collapseColor">
                                         <ul>
-                                            <li class="item-size-text">
-                                                <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "S".equals(size) ? "active" : "" %>" name="filter4" value="S" id="filter4-S">
-                                                <label for="filter4-S"><span>S</span></label>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "black".equals(color) ? "active" : "" %>" name="filter2" value="black" data-name="Đen" id="filter2-den" ><label for="filter2-den"><span class="den">Đen</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "white".equals(color) ? "active" : "" %>" name="filter2" value="white" data-name="Trắng" id="filter2-trang" ><label for="filter2-trang"><span class="trang">Trắng</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "red".equals(color) ? "active" : "" %>" name="filter2" value="red" data-name="Đỏ" id="filter2-do" ><label for="filter2-do"><span class="do">Đỏ</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "gray".equals(color) ? "active" : "" %>" name="filter2" value="gray" data-name="Xám" id="filter2-xam"><label for="filter2-xam"><span class="xam">Xám</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "blue".equals(color) ? "active" : "" %>" name="filter2" value="blue" data-name="Xanh dương" id="filter2-xanh-duong"><label for="filter2-xanh-duong"><span class="xanh-duong">Xanh dương</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "pink".equals(color) ? "active" : "" %>" name="filter2" value="pink" data-name="Hồng" id="filter2-hong"><label for="filter2-hong"><span class="hong">Hồng</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "yellow".equals(color) ? "active" : "" %>" name="filter2" value="yellow" data-name="Vàng" id="filter2-vang"><label for="filter2-vang"><span class="vang">Vàng</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "purple".equals(color) ? "active" : "" %>" name="filter2" value="purple" data-name="Tím" id="filter2-tim"><label for="filter2-tim"><span class="tim">Tím</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "brown".equals(color) ? "active" : "" %>" name="filter2" value="brown" data-name="Nâu" id="filter2-nau"><label for="filter2-nau"><span class="nau">Nâu</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "green".equals(color) ? "active" : "" %>" name="filter2" value="green" data-name="Xanh lá" id="filter2-xanh-la"><label for="filter2-xanh-la"><span class="xanh-la">Xanh lá</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "nude".equals(color) ? "active" : "" %>" name="filter2" value="nude" data-name="Nude" id="filter2-nude"><label for="filter2-nude"><span class="nude">Nude</span></label></li>
+                                            <li><input type="checkbox" onchange="submitIfChecked()" class="input-filter <%= "orange".equals(color) ? "active" : "" %>" name="filter2" value="orange" data-name="Cam" id="filter2-cam"><label for="filter2-cam"><span class="cam">Cam</span></label></li>
+
+                                        </ul>
+                                    </div>                    
+                                </div>
+
+                                <div class="size filter-option">
+                                    <div class="filter-title" data-bs-toggle="collapse" href="#collapseSize" role="button" onclick="handleRotate()">
+                                        <p>Kích thước</p>
+                                        <div class="arrows-filter">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L4.75 1.25L8.5 5" stroke="black" stroke-width="1.2" stroke-linecap="square"></path></svg>
+                                        </div>
+                                    </div>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <div class="collapse content-item-filter kichthuoc" id="collapseSize">
+                                        <div class="item-filter-size" data-size="1">
+                                            <label>Quần áo</label>
+                                            <ul>
+                                                <li class="item-size-text">
+                                                    <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "S".equals(size) ? "active" : "" %>" name="filter4" value="S" id="filter4-S">
+                                                    <label for="filter4-S"><span>S</span></label>
+                                                </li>
+                                                <li class="item-size-text">
+                                                    <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "M".equals(size) ? "active" : "" %>" name="filter4" value="M" id="filter4-M">
+                                                    <label for="filter4-M"><span>M</span></label>
+                                                </li>
+                                                <li class="item-size-text">
+                                                    <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "L".equals(size) ? "active" : "" %>" name="filter4" value="L" id="filter4-L">
+                                                    <label for="filter4-L"><span>L</span></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>                    
+                                </div>
+
+                                <div class="price filter-option">
+                                    <div class="filter-title" data-bs-toggle="collapse" href="#collapsePrice" role="button" onclick="handleRotate()">
+                                        <p>Giá</p>
+                                        <div class="arrows-filter">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L4.75 1.25L8.5 5" stroke="black" stroke-width="1.2" stroke-linecap="square"></path></svg>
+                                        </div>
+                                    </div>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <div class="collapse content-item-filter gia" id="collapsePrice">
+                                        <ul>
+                                            <li class="price-filter <c:out value="${price == 'sm1000000' ? 'active' : ''}" />" >
+                                                <input type="radio" onchange="submitIfChecked()" name="filter-price" value="sm1000000" data-price="1000000" id="price-filter-1">
+                                                <label for="price-filter-1">Dưới 1,000,000đ</label>
                                             </li>
-                                            <li class="item-size-text">
-                                                <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "M".equals(size) ? "active" : "" %>" name="filter4" value="M" id="filter4-M">
-                                                <label for="filter4-M"><span>M</span></label>
+                                            <li class="price-filter <c:out value="${price == 'bt1000000-2000000' ? 'active' : ''}" />" >
+                                                <input type="radio" onchange="submitIfChecked()" name="filter-price" value="bt1000000-2000000" data-price="1000000_2000000" id="price-filter-2">
+                                                <label for="price-filter-2">1,000,000đ - 2,000,000đ</label>
                                             </li>
-                                            <li class="item-size-text">
-                                                <input type="checkbox" onchange="submitIfChecked()" class="size-filter <%= "L".equals(size) ? "active" : "" %>" name="filter4" value="L" id="filter4-L">
-                                                <label for="filter4-L"><span>L</span></label>
+                                            <li class="price-filter <c:out value="${price == 'bt2000000-3000000' ? 'active' : ''}" />" >
+                                                <input type="radio" onchange="submitIfChecked()" name="filter-price" value="bt2000000-3000000" data-price="2000000_3000000" id="price-filter-3">
+                                                <label for="price-filter-3">2,000,000đ - 3,000,000đ</label>
+                                            </li>
+                                            <li class="price-filter <c:out value="${price == 'lg3000000' ? 'active' : ''}" />" >
+                                                <input type="radio" onchange="submitIfChecked()" name="filter-price" value="lg3000000" data-price="3000000" id="price-filter-4">
+                                                <label for="price-filter-4">Trên 3,000,000đ</label>
                                             </li>
                                         </ul>
-                                    </div>
 
-                                </div>                    
-                            </div>
-
-                            <div class="price filter-option">
-                                <div class="filter-title" data-bs-toggle="collapse" href="#collapsePrice" role="button" onclick="handleRotate()">
-                                    <p>Giá</p>
-                                    <div class="arrows-filter">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 5L4.75 1.25L8.5 5" stroke="black" stroke-width="1.2" stroke-linecap="square"></path></svg>
-                                    </div>
+                                    </div>                    
                                 </div>
-                                <li><hr class="dropdown-divider"></li>
-                                <div class="collapse content-item-filter gia" id="collapsePrice">
-                                    <ul>
-                                        <li class="price-filter <c:out value="${price == 'sm1000000' ? 'active' : ''}" />" >
-                                            <input type="radio" onchange="submitIfChecked()" name="filter-price" value="sm1000000" data-price="1000000" id="price-filter-1">
-                                            <label for="price-filter-1">Dưới 1,000,000đ</label>
-                                        </li>
-                                        <li class="price-filter <c:out value="${price == 'bt1000000-2000000' ? 'active' : ''}" />" >
-                                            <input type="radio" onchange="submitIfChecked()" name="filter-price" value="bt1000000-2000000" data-price="1000000_2000000" id="price-filter-2">
-                                            <label for="price-filter-2">1,000,000đ - 2,000,000đ</label>
-                                        </li>
-                                        <li class="price-filter <c:out value="${price == 'bt2000000-3000000' ? 'active' : ''}" />" >
-                                            <input type="radio" onchange="submitIfChecked()" name="filter-price" value="bt2000000-3000000" data-price="2000000_3000000" id="price-filter-3">
-                                            <label for="price-filter-3">2,000,000đ - 3,000,000đ</label>
-                                        </li>
-                                        <li class="price-filter <c:out value="${price == 'lg3000000' ? 'active' : ''}" />" >
-                                            <input type="radio" onchange="submitIfChecked()" name="filter-price" value="lg3000000" data-price="3000000" id="price-filter-4">
-                                            <label for="price-filter-4">Trên 3,000,000đ</label>
-                                        </li>
-                                    </ul>
-
-                                </div>                    
-                            </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="sort">
+                        <form action="product" method="post" id="myForm">
+                            <select name="price" id="price" class="sort-opt" onclick="hideDefaultOption()" onchange="submitForm()">
+                                <option value="">Sắp xếp theo</option>
+                                <option value="price-asc">Giá: Tăng dần</option>
+                                <option value="price-desc">Giá: Giảm dần</option>
+                                <option value="name-asc">Tên: A-Z</option>
+                                <option value="name-desc">Tên: Z-A</option>
+                                <option value="best-selling">Bán chạy nhất</option>
+                                <!--<input class="sort-input" type="submit" value="Confirm"/>-->
+                            </select>
                         </form>
                     </div>
                 </div>
-                <div class="sort">
-                    <form action="product" method="post" id="myForm">
-                        <select name="price" id="price" class="sort-opt" onclick="hideDefaultOption()" onchange="submitForm()">
-                            <option value="">Sắp xếp theo</option>
-                            <option value="price-asc">Giá: Tăng dần</option>
-                            <option value="price-desc">Giá: Giảm dần</option>
-                            <option value="name-asc">Tên: A-Z</option>
-                            <option value="name-desc">Tên: Z-A</option>
-                            <option value="best-selling">Bán chạy nhất</option>
-                            <!--<input class="sort-input" type="submit" value="Confirm"/>-->
-                        </select>
-                    </form>
-                </div>
-            </div>
+            </c:if>
+
             <div class="products">
                 <div class="row pd-row">
                     <c:if test="${not empty data}">
                         <c:forEach var="product" items="${data}">
-                            <div class="product col-md-3 ">
+                            <form action="viewdetail" method="get" class="product col-md-3 " id="product-form">
                                 <div class="img">
                                     <img src="${product.image}">                
                                 </div>
@@ -417,7 +428,9 @@
                                         <span class="cost">${Product.formatCurrency(product.getPrice())}</span>
                                     </div>
                                 </div>
-                            </div> 
+                                <input type="hidden" name="productId" value="${product.id}"/>
+                                <button type="submit" class="btn-view-details">Xem chi tiết</button>
+                            </form> 
                         </c:forEach>
                     </c:if>
                 </div>
@@ -456,7 +469,7 @@
 
         </div>
         <%@ include file="footer.jsp" %>
-
+        
         <script>
             function hideDefaultOption() {
                 var selectElement = document.getElementById("price");
