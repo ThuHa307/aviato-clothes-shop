@@ -5,7 +5,7 @@
 
 package controller;
 
-import dao.ProductDAO;
+import dao.CategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,15 +13,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.Category;
 import model.Product;
 
 /**
  *
  * @author PC
  */
-@WebServlet(name="ViewDetailServlet", urlPatterns={"/viewdetail"})
-public class ViewDetailServlet extends HttpServlet {
+@WebServlet(name="CreateProductServlet", urlPatterns={"/createproduct"})
+public class CreateProductServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +40,10 @@ public class ViewDetailServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewDetailServlet</title>");  
+            out.println("<title>Servlet CreateProduct</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewDetailServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet CreateProduct at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,21 +60,9 @@ public class ViewDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String productId = request.getParameter("productId");
-        ProductDAO prDao = new ProductDAO();
-        Product x = prDao.findById(productId);
-        String color = x.getColor();
-        String name = x.getName();
-        ArrayList<Product> products = (ArrayList<Product>)prDao.findByName(x.getName());
-        ArrayList<Product> productSize = (ArrayList<Product>)prDao.findBySizes(name, color);
-        ArrayList<String> sizes = Product.getSizes(productSize);
-        for (String size1 : sizes) {
-            System.out.println(size1);
-        }
-        request.setAttribute("product", x);
-        request.setAttribute("familiar", Product.removeDuplicateProducts(products));
-        request.setAttribute("sizes", sizes);
-        request.getRequestDispatcher("productdetails.jsp").forward(request, response);
+        CategoryDAO catDao = new CategoryDAO();
+        request.setAttribute("categories", catDao.readProducts());
+        request.getRequestDispatcher("createProduct.jsp").forward(request, response);
     } 
 
     /** 
@@ -85,7 +75,27 @@ public class ViewDetailServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        String name = request.getParameter("name");
+        String oriPriceStr = request.getParameter("oriprice");
+        String priceStr = request.getParameter("price");
+        String size = request.getParameter("size");
+        String quantityStr = request.getParameter("quantity");
+        String type = request.getParameter("type");
+        String categoryName = request.getParameter("categoryName");
+        String image = request.getParameter("image");
+        String description = request.getParameter("description");
+        String color = request.getParameter("color");
+        String colorImage = request.getParameter(color);
+        try {
+            CategoryDAO catDao = new CategoryDAO();
+            int oriPrice = Integer.parseInt(oriPriceStr);
+            int price = Integer.parseInt(priceStr);
+            int quantity = Integer.parseInt(quantityStr);
+            Product x = new Product(name, description, price, oriPrice, type, color, size, quantity, image, catDao.findId(categoryName), colorImage);
+            System.out.println(x);
+        } catch (Exception e) {
+        }
+        
     }
 
     /** 

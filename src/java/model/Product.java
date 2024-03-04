@@ -42,6 +42,22 @@ public class Product {
         this.color = color;
         this.image = image;
     }   
+
+    public Product(String name, String description, int price, int oriPrice, String type, String color, String size, int quantity, String image, int categoryId, String colorImage) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.oriPrice = oriPrice;
+        this.type = type;
+        this.color = color;
+        this.size = size;
+        this.quantity = quantity;
+        this.image = image;
+        this.categoryId = categoryId;
+        this.colorImage = colorImage;
+    }
+    
+    
     
     public Product(int id, String name, String description, int price, int oriPrice, String type, String color, String size, int quantity, String iamge, int categoryId, String colorImage) {
         this.id = id;
@@ -154,13 +170,10 @@ public class Product {
         this.categoryId = categoryId;
     }
 
-    
-    
     @Override
     public String toString() {
-        return "Product{" + "id=" + id + ", name=" + name + ", description=" + description + ", price=" + price + ", oriPrice=" + oriPrice + ", type=" + type + ", color=" + color + ", size=" + size + ", quantity=" + quantity + ", iamge=" + image + ", categoryId=" + categoryId + '}';
+        return "Product{" + "id=" + id + ", name=" + name + ", description=" + description + ", price=" + price + ", oriPrice=" + oriPrice + ", type=" + type + ", color=" + color + ", size=" + size + ", quantity=" + quantity + ", image=" + image + ", categoryId=" + categoryId + ", colorImage=" + colorImage + '}';
     }
-    
     public static String formatCurrency(int number) {
         DecimalFormat formatter = new DecimalFormat("###,###,###,###.##");
         return formatter.format(number) + "đ";
@@ -179,13 +192,13 @@ public class Product {
         return new ArrayList<>(productMap.values());
     }
     
-    public static Set<String> getUniqueSizes(List<Product> products) {
-        Set<String> uniqueSizes = new HashSet<>();
+    public static ArrayList<String> getSizes(List<Product> products) {
+        ArrayList<String> sizes = new ArrayList<>();
 
         for (Product product : products) {
-            uniqueSizes.add(product.getSize());
+            sizes.add(product.getSize());
         }
 
-        return uniqueSizes;
+        return sizes;
     }
 }

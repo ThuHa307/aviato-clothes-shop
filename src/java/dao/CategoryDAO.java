@@ -35,5 +35,19 @@ public class CategoryDAO {
         return results;
     }
     
+    public int findId(String name) {
+        int id = -1;
+        try (Connection con = DBConnection.getConnection()) {
+            PreparedStatement stm = con.prepareStatement("select CategoryID from Category where CategoryName = ?");
+            stm.setString(1, name);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
 
 }

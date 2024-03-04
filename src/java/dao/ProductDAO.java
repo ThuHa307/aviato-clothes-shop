@@ -249,4 +249,35 @@ public class ProductDAO {
         }
         return results;
     }
+    
+    public List<Product> findBySizes(String nameStr, String colorStr) {
+        ArrayList<Product> results = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection()) {
+            PreparedStatement stm = con.prepareStatement("select * from Product where ProductName = ? and Color = ? and Quantity > 0");
+            stm.setString(1, nameStr);
+            stm.setString(2, colorStr);
+            //System.out.println(stm.toString());
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String description = rs.getString(3);
+                int price = rs.getInt(4);
+                int oriPrice = rs.getInt(5);
+                String type = rs.getString(6);
+                String color = rs.getString(7);
+                String size = rs.getString(8);
+                int quantity = rs.getInt(9);
+                String image = rs.getString(10);
+                int categoryId = rs.getInt(11);
+                String colorImage = rs.getString(12);
+                Product result = new Product(id, name, description, price, oriPrice, type, color, size, quantity, image, categoryId, colorImage);
+                //System.out.println(x);
+                results.add(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
 }
